@@ -1,5 +1,9 @@
 
-package adventofcode;
+package adventofcode.solutions;
+
+import adventofcode.framework.Solver;
+import adventofcode.framework.SolverMethod;
+import adventofcode.framework.SolverClass;
 
 /**
  * Solves the problems for day one of the advent calendar:

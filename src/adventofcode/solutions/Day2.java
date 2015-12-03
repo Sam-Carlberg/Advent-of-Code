@@ -1,5 +1,9 @@
 
-package adventofcode;
+package adventofcode.solutions;
+
+import adventofcode.framework.Solver;
+import adventofcode.framework.SolverMethod;
+import adventofcode.framework.SolverClass;
 
 import java.util.stream.Stream;
 

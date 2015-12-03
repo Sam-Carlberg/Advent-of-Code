@@ -1,5 +1,5 @@
 
-package adventofcode;
+package adventofcode.framework;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

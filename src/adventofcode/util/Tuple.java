@@ -1,5 +1,5 @@
 
-package adventofcode;
+package adventofcode.util;
 
 import java.util.Objects;
 

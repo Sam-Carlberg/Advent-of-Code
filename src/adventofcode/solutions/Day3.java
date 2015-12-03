@@ -1,10 +1,15 @@
 
-package adventofcode;
+package adventofcode.solutions;
+
+import adventofcode.framework.Solver;
+import adventofcode.util.Tuple;
+import adventofcode.framework.SolverMethod;
+import adventofcode.framework.SolverClass;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static adventofcode.Tuple.tuple;
+import static adventofcode.util.Tuple.tuple;
 
 /**
  * Solves the problems for day three of the advent calendar:

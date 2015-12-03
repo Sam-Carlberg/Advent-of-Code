@@ -1,10 +1,14 @@
 
 package adventofcode;
 
+import adventofcode.framework.Solver;
+import adventofcode.framework.SolverClass;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+
 import java.lang.reflect.Modifier;
 
 import java.net.URLDecoder;
