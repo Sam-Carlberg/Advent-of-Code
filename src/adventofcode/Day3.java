@@ -12,19 +12,16 @@ import static adventofcode.Tuple.tuple;
  *
  * @author Sam Carlberg
  */
-public class Day3 extends Solver<Integer> {
+@SolverClass(day = 3)
+public class Day3 extends Solver {
     
     private static final char UP    = '^';
     private static final char DOWN  = 'v';
     private static final char LEFT  = '<';
     private static final char RIGHT = '>';
 
-    public Day3() {
-        super(3);
-    }
-
-    @Override
-    protected Integer part1(String input) {
+    @SolverMethod(part = 1)
+    public int findHousesVisitedBySanta() {
         Set<Tuple> visited = new HashSet<>();
         int x = 0;
         int y = 0;
@@ -40,8 +37,8 @@ public class Day3 extends Solver<Integer> {
         return visited.size();
     }
 
-    @Override
-    protected Integer part2(String input) {
+    @SolverMethod(part = 2)
+    public int findHousesVisitedBySantaAndRobot() {
         Set<Tuple> visited = new HashSet<>();
         int[] x = {0, 0}; // santa is 0, robo-santa is 1
         int[] y = {0, 0}; // santa is 0, robo-santa is 1
@@ -58,10 +55,6 @@ public class Day3 extends Solver<Integer> {
             visited.add(tuple(x[s], y[s]));
         }
         return visited.size();
-    }
-
-    public static void main(String[] args) {
-        new Day3().solve();
     }
 
 }

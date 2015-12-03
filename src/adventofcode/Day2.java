@@ -9,14 +9,11 @@ import java.util.stream.Stream;
  *
  * @author Sam Carlberg
  */
-public class Day2 extends Solver<Integer> {
+@SolverClass(day = 2)
+public class Day2 extends Solver {
 
-    public Day2() {
-        super(2);
-    }
-
-    @Override
-    protected Integer part1(String input) {
+    @SolverMethod(part = 1)
+    public int findTotalAreaOfPaper() {
         return Stream.of(input.split("\n"))
                      .map(line -> line.split("x"))
                      .map(s -> Stream.of(s).mapToInt(Integer::parseInt).sorted().toArray())
@@ -24,17 +21,13 @@ public class Day2 extends Solver<Integer> {
                      .sum();
     }
 
-    @Override
-    protected Integer part2(String input) {
+    @SolverMethod(part = 2)
+    public int findTotalFeetOfRibbon() {
         return Stream.of(input.split("\n"))
                      .map(line -> line.split("x"))
                      .map(s -> Stream.of(s).mapToInt(Integer::parseInt).sorted().toArray())
                      .mapToInt(dims -> 2 * (dims[0] + dims[1]) + (dims[0] * dims[1] * dims[2]))
                      .sum();
-    }
-
-    public static void main(String[] args) {
-        new Day2().solve();
     }
 
 }

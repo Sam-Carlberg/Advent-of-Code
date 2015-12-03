@@ -3,8 +3,14 @@ package adventofcode;
 
 import java.io.File;
 import java.io.IOException;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import java.nio.file.Files;
+
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Abstract superclass of solvers for daily problems. This expects input files
@@ -13,50 +19,48 @@ import java.util.stream.Collectors;
  *
  * @author Sam Carlberg
  */
-public abstract class Solver<T> {
+public abstract class Solver {
 
     private static final String FILE_PATTERN = "inputs/input_day%DAY%.txt";
 
     private final int day;
+    
+    protected String input;
 
-    /**
-     * Creates a solver for the problem for the given day.
-     *
-     * @param day the day this solver solves for, in the range (1, 25)
-     */
-    public Solver(int day) {
-        this.day = day;
+    public Solver() {
+        if (getClass().isAnnotationPresent(SolverClass.class)) {
+            this.day = getClass().getDeclaredAnnotation(SolverClass.class).day();
+        } else {
+            throw new RuntimeException("No @Day annotation present on subclass of Solver");
+        }
     }
 
     /**
-     * Solves part 1 of the problem for the given input
-     *
-     * @param input
-     * @return
-     */
-    protected abstract T part1(String input);
-
-    /**
-     * Solves part 2 of the problem for the given input
-     *
-     * @param input
-     * @return
-     */
-    protected abstract T part2(String input);
-
-    /**
-     * Solves both parts of the problem. This reads the text in the input file
-     * and passes it to each of {@link #part1(java.lang.String) part1()} and
-     * {@link #part2(java.lang.String) part2()}
+     * Runs all methods marked with the {@link SolverMethod @SolverMethod}
+     * annotation, ordered in ascending order by part number.
      */
     public void solve() {
         try {
-            String text = Files.lines(new File(FILE_PATTERN.replace("%DAY%", "" + day)).toPath())
-                    .collect(Collectors.joining("\n"));
-            System.out.println("Solution for day " + day + ", part 1: " + part1(text));
-            System.out.println("Solution for day " + day + ", part 2: " + part2(text));
+            input = Files.lines(new File(FILE_PATTERN.replace("%DAY%", "" + day)).toPath())
+                         .collect(Collectors.joining("\n"));
+            Stream.of(getClass().getMethods())
+                  .filter(m -> m.isAnnotationPresent(SolverMethod.class))
+                  .filter(m -> m.getParameterCount() == 0)
+                  .sorted((m1, m2) -> m1.getAnnotation(SolverMethod.class).part() - m2.getAnnotation(SolverMethod.class).part())
+                  .forEachOrdered(m -> invoke(m));
         } catch (IOException ex) {
             System.err.println("Couldn't open input file for day " + day);
+        }
+    }
+
+    private void invoke(Method m) {
+        try {
+            int part = m.getAnnotation(SolverMethod.class).part();
+            Object result = m.invoke(this);
+            System.out.printf("Solution for day %d, part %d: %s\n", day, part, result);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            // meh
+            throw new RuntimeException(ex);
         }
     }
 
