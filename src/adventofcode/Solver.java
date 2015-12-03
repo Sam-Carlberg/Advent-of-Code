@@ -8,6 +8,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import java.nio.file.Files;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,17 +23,26 @@ import java.util.stream.Stream;
  */
 public abstract class Solver {
 
-    private static final String FILE_PATTERN = "inputs/input_day%DAY%.txt";
+    private static final String FILE_PATTERN = "inputs/input_day%d.txt";
 
     private final int day;
     
-    protected String input;
+    protected final String input;
 
     public Solver() {
+        // Set day
         if (getClass().isAnnotationPresent(SolverClass.class)) {
             this.day = getClass().getDeclaredAnnotation(SolverClass.class).day();
         } else {
-            throw new RuntimeException("No @Day annotation present on subclass of Solver");
+            throw new RuntimeException("No @SolverClass annotation present on subclass of Solver");
+        }
+
+        // Set input
+        try {
+            input = Files.lines(new File(String.format(FILE_PATTERN, day)).toPath())
+                         .collect(Collectors.joining("\n"));
+        } catch (IOException ex) {
+            throw new RuntimeException("Couldn't open input file for day " + day);
         }
     }
 
@@ -40,17 +51,11 @@ public abstract class Solver {
      * annotation, ordered in ascending order by part number.
      */
     public void solve() {
-        try {
-            input = Files.lines(new File(FILE_PATTERN.replace("%DAY%", "" + day)).toPath())
-                         .collect(Collectors.joining("\n"));
-            Stream.of(getClass().getMethods())
-                  .filter(m -> m.isAnnotationPresent(SolverMethod.class))
-                  .filter(m -> m.getParameterCount() == 0)
-                  .sorted((m1, m2) -> m1.getAnnotation(SolverMethod.class).part() - m2.getAnnotation(SolverMethod.class).part())
-                  .forEachOrdered(m -> invoke(m));
-        } catch (IOException ex) {
-            System.err.println("Couldn't open input file for day " + day);
-        }
+        Stream.of(getClass().getMethods())
+              .filter(m -> m.isAnnotationPresent(SolverMethod.class))
+              .filter(m -> m.getParameterCount() == 0)
+              .sorted((m1, m2) -> m1.getAnnotation(SolverMethod.class).part() - m2.getAnnotation(SolverMethod.class).part())
+              .forEachOrdered(m -> invoke(m));
     }
 
     private void invoke(Method m) {
