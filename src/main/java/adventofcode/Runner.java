@@ -4,10 +4,12 @@ package adventofcode;
 import adventofcode.framework.SolverClass;
 import adventofcode.framework.SolverMethod;
 import adventofcode.util.Reflection;
+import java.io.BufferedReader;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import java.lang.reflect.Method;
@@ -15,11 +17,14 @@ import java.lang.reflect.Method;
 import java.net.URLDecoder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import static java.util.stream.Collectors.toList;
+import lombok.SneakyThrows;
 
 /**
  * Main class. This will automatically run all classes in this project that  are
@@ -64,7 +69,7 @@ public class Runner {
         }
         Stream.of(clazz.getMethods())
               .filter(m -> m.isAnnotationPresent(SolverMethod.class))
-              .filter(m -> m.getParameterCount() == 0)
+              .filter(m -> Arrays.equals(m.getParameterTypes(), new Class[]{String.class}))
               .sorted((m1, m2) -> m1.getAnnotation(SolverMethod.class).part() - m2.getAnnotation(SolverMethod.class).part())
               .forEachOrdered(m -> runSolverMethod(m, solver));
     }
@@ -79,6 +84,7 @@ public class Runner {
     /**
      * Gets all solver classes (assumes all classes are in one project)
      */
+    @SneakyThrows(ClassNotFoundException.class)
     public static List<Class<?>> getSolvers() {
         List<Class<?>> solvers = new ArrayList<>();
         try (ZipInputStream zip = new ZipInputStream(new FileInputStream(getJarFile()))) {
@@ -92,15 +98,10 @@ public class Runner {
                 if (!className.startsWith("adventofcode")) {
                     continue;
                 }
-                try {
-                    Class<?> clazz = Class.forName(className);
-                    if (Reflection.hasDefaultConstructor(clazz)
-                            && clazz.isAnnotationPresent(SolverClass.class)) {
-                        solvers.add(clazz);
-                    }
-                } catch (ClassNotFoundException ex) {
-                    // I'd normally use @lombok.SneakyThrows for this, 
-                    // but I don't want to use any external libraries
+                Class<?> clazz = Class.forName(className);
+                if (Reflection.hasDefaultConstructor(clazz)
+                        && clazz.isAnnotationPresent(SolverClass.class)) {
+                    solvers.add(clazz);
                 }
             }
         } catch (IOException e) {
@@ -113,21 +114,28 @@ public class Runner {
     /**
      * Gets the jar file running this main class (i.e. AdventOfCode.jar)
      */
+    @SneakyThrows(UnsupportedEncodingException.class)
     public static File getJarFile() {
-        try {
-            String path = Runner.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-            String decodedPath = URLDecoder.decode(path, "UTF-8");
-            return new File(decodedPath);
-        } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException("The end has come: UTF-8 is no longer a supported string encoding", ex);
-        }
+        String path = Runner.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath = URLDecoder.decode(path, "UTF-8");
+        return new File(decodedPath);
     }
     
     private static void runSolverMethod(Method m, Object instance) {
         int day = getDay(instance.getClass());
         int part = m.getAnnotation(SolverMethod.class).part();
-        Object result = Reflection.invoke(instance, m);
+        Object result = Reflection.invoke(instance, m, getInputStringForDay(day));
         System.out.printf("Solution for day %d, part %d: %s\n", day, part, result);
+    }
+    
+    private static String getInputStringForDay(int day) {
+        final String filePattern = "/inputs/input_day%d.txt";
+        
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(Runner.class.getResourceAsStream(String.format(filePattern, day))))) {
+            return r.lines().collect(Collectors.joining("\n"));
+        } catch (IOException ex) {
+            throw new RuntimeException("Couldn't open input file for day " + day, ex);
+        }
     }
 
 }

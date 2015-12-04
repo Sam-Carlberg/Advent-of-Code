@@ -1,7 +1,6 @@
 
 package adventofcode.solutions;
 
-import adventofcode.framework.Solver;
 import adventofcode.util.Tuple;
 import adventofcode.framework.SolverMethod;
 import adventofcode.framework.SolverClass;
@@ -18,7 +17,7 @@ import static adventofcode.util.Tuple.tuple;
  * @author Sam Carlberg
  */
 @SolverClass(day = 3)
-public class Day3 extends Solver {
+public class Day3 {
     
     private static final char UP    = '^';
     private static final char DOWN  = 'v';
@@ -26,31 +25,23 @@ public class Day3 extends Solver {
     private static final char RIGHT = '>';
 
     @SolverMethod(part = 1)
-    public int findHousesVisitedBySanta() {
-        Set<Tuple> visited = new HashSet<>();
-        int x = 0;
-        int y = 0;
-        for (char c : input.toCharArray()) {
-            switch (c) {
-                case UP:    x++; break;
-                case DOWN:  x--; break;
-                case LEFT:  y--; break;
-                case RIGHT: y++; break;
-            }
-            visited.add(tuple(x, y));
-        }
-        return visited.size();
+    public int findHousesVisitedBySanta(String directions) {
+        return housesVisited(directions, 1);
     }
 
     @SolverMethod(part = 2)
-    public int findHousesVisitedBySantaAndRobot() {
+    public int findHousesVisitedBySantaAndRobot(String directions) {
+        return housesVisited(directions, 2);
+    }
+    
+    private int housesVisited(String directions, int numActors) {
         Set<Tuple> visited = new HashSet<>();
-        int[] x = {0, 0}; // santa is 0, robo-santa is 1
-        int[] y = {0, 0}; // santa is 0, robo-santa is 1
-        char[] chars = input.toCharArray();
+        int[] x = new int[numActors];
+        int[] y = new int[numActors];
+        char[] chars = directions.toCharArray();
         for(int i = 0; i < chars.length; i++) {
             char c = chars[i];
-            int s = i % 2; // which santa? normal santa is 0, robo-santa is 1
+            int s = i % numActors;
             switch (c) {
                 case UP:    x[s]++; break;
                 case DOWN:  x[s]--; break;

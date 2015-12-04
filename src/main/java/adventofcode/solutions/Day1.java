@@ -1,7 +1,6 @@
 
 package adventofcode.solutions;
 
-import adventofcode.framework.Solver;
 import adventofcode.framework.SolverMethod;
 import adventofcode.framework.SolverClass;
 
@@ -12,17 +11,17 @@ import adventofcode.framework.SolverClass;
  * @author Sam Carlberg
  */
 @SolverClass(day = 1)
-public class Day1 extends Solver {
+public class Day1 {
 
     @SolverMethod(part = 1)
-    public int findFinalFloor() {
+    public int findFinalFloor(String input) {
         int leftParens = input.replaceAll("[^(]", "").length();
         int rightParens = input.replaceAll("[^)]", "").length();
         return leftParens - rightParens;
     }
 
     @SolverMethod(part = 2)
-    public int findFirstMoveToBasement() {
+    public int findFirstMoveToBasement(String input) {
         int pos = 0;
         for (int level = 0; pos < input.length() && level > -1; pos++) {
             level += input.charAt(pos) == '(' ? 1 : -1;

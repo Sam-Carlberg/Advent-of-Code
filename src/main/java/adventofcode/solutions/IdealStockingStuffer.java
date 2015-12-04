@@ -1,7 +1,6 @@
 
 package adventofcode.solutions;
 
-import adventofcode.framework.Solver;
 import adventofcode.framework.SolverClass;
 import adventofcode.framework.SolverMethod;
 
@@ -19,26 +18,26 @@ import lombok.SneakyThrows;
  * @author Sam Carlberg
  */
 @SolverClass(day = 4)
-public class IdealStockingStuffer extends Solver {
+public class IdealStockingStuffer {
 
     @SolverMethod(part = 1)
-    public int lowestInt5() {
-        return lowestInt(5);
+    public int lowestInt5(String secretKey) {
+        return lowestInt(secretKey, 5);
     }
 
     @SolverMethod(part = 2)
-    public int lowestInt6() {
-        return lowestInt(6);
+    public int lowestInt6(String secretKey) {
+        return lowestInt(secretKey, 6);
     }
     
     @SneakyThrows(NoSuchAlgorithmException.class)
-    private int lowestInt(int numLeadingZeros) {
+    private int lowestInt(String secret, int numLeadingZeros) {
         MessageDigest md = MessageDigest.getInstance("MD5");
         String prefix = IntStream.range(0, numLeadingZeros)
                                  .mapToObj(i -> "0")
                                  .collect(Collectors.joining());
         return IntStream.iterate(0, i -> i + 1)
-                        .filter(i -> bytesToHexString(md.digest((input + i).getBytes())).startsWith(prefix))
+                        .filter(i -> bytesToHexString(md.digest((secret + i).getBytes())).startsWith(prefix))
                         .findFirst()
                         .orElse(-1);
     }
