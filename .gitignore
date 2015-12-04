@@ -1,7 +1,5 @@
-
-manifest.mf
-
-build.xml
-
-lib/*
-/dist/
+# Gradle wrapper and build files
+build/
+.*/
+.*
+gradle/

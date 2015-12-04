@@ -1,8 +1,11 @@
 
 package adventofcode.framework;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import java.nio.file.Files;
 
@@ -17,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public abstract class Solver {
 
-    private static final String FILE_PATTERN = "inputs/input_day%d.txt";
+    private static final String FILE_PATTERN = "/inputs/input_day%d.txt";
 
     private final int day;
     
@@ -32,9 +35,8 @@ public abstract class Solver {
         }
 
         // Set input
-        try {
-            input = Files.lines(new File(String.format(FILE_PATTERN, day)).toPath())
-                         .collect(Collectors.joining("\n"));
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(String.format(FILE_PATTERN, day))))) {
+            input = r.lines().collect(Collectors.joining("\n"));
         } catch (IOException ex) {
             throw new RuntimeException("Couldn't open input file for day " + day);
         }
