@@ -1,13 +1,22 @@
 apply plugin: 'java'
-apply plugin: 'application' // lets us run the project from IDE
+apply plugin: 'base'
+apply plugin: 'maven'
 
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-mainClassName = 'adventofcode.Runner'
+def mainClassName = 'adventofcode.Runner'
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = mainClassName
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.projectlombok:lombok:1.16.4'
 }
 
 jar {

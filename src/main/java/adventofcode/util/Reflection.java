@@ -39,7 +39,7 @@ public class Reflection {
         try {
             return m.invoke(instance, args);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            throw new RuntimeException(String.format("Could not invoke method '%s' on '%s' with arguments '%s'", m, instance, Arrays.toString(args)));
+            throw new RuntimeException(String.format("Could not invoke method '%s' on '%s' with arguments '%s'", m, instance, Arrays.toString(args)), ex);
         }
     }
 

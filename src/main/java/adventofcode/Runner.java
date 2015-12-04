@@ -89,6 +89,9 @@ public class Runner {
                     continue;
                 }
                 String className = fileName.replaceAll("/", ".").replace(".class", "");
+                if (!className.startsWith("adventofcode")) {
+                    continue;
+                }
                 try {
                     Class<?> clazz = Class.forName(className);
                     if (Reflection.hasDefaultConstructor(clazz)
