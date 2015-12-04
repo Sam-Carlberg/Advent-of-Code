@@ -114,7 +114,6 @@ public class Runner {
         try {
             String path = Runner.class.getProtectionDomain().getCodeSource().getLocation().getPath();
             String decodedPath = URLDecoder.decode(path, "UTF-8");
-            System.out.println(decodedPath);
             return new File(decodedPath);
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException("The end has come: UTF-8 is no longer a supported string encoding", ex);
