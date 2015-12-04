@@ -5,7 +5,7 @@ Java solutions for the 2015 [Advent of Code](http://adventofcode.com/)
 
 Command line (Windows, OS X, and Linux)  
 1. Clone the repository and cd into it   
-2. Run `gradle build`  
+2. Run `gradle build` (Windows) or `./gradlew build` (OS X, Linux)  
 3. Build artifacts are placed in `build/`; the jar will be at `build/libs/AdventOfCode.jar`
 
 
