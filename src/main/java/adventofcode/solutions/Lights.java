@@ -1,6 +1,7 @@
 
 package adventofcode.solutions;
 
+import adventofcode.util.TriConsumer;
 import adventofcode.framework.SolverClass;
 import adventofcode.framework.SolverMethod;
 

@@ -1,5 +1,5 @@
 
-package adventofcode.solutions;
+package adventofcode.util;
 
 /**
  * Variant on {@link java.util.function.Consumer} that takes three inputs rather
@@ -7,7 +7,7 @@ package adventofcode.solutions;
  *
  * @author Sam Carlberg
  */
-interface TriConsumer<T, U, V> {
+public interface TriConsumer<T, U, V> {
 
     /** No-op */
     public static final TriConsumer NONE = (t, u, v) -> {};
